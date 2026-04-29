@@ -21,7 +21,7 @@ def initialize_file():
         with open(FILE_NAME, "w") as file:
             file.write("Claim ID,Patient Name,Amount,Status\n")
 
-
+# Final improvements for clarity and readability
 # --------------------------------------------
 # Add a new claim to the system
 # --------------------------------------------
