@@ -36,7 +36,7 @@ def add_claim():
     except KeyboardInterrupt:
         print("\nInput interrupted. Returning to menu.")
         return
-
+# Ensures user does not leave required fields empty
     # Validate input
     if claim_id == "" or name == "" or amount == "" or status == "":
         print("Error: All fields are required.")
