@@ -10,9 +10,9 @@ This project is a Python-based claim management system that allows users to:
 
 ## Features
 - Input validation for accurate data entry
-- CSV file storage for persistence
+- Stores data in a CSV file
 - Error handling to prevent crashes
-- Organized using functions for modular design
+- Organized into separate functions
 
 ## How to Run
 1. Open the project in a Python environment
