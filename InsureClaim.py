@@ -10,25 +10,24 @@
 
 import os
 
-FILE_NAME = "claims.csv"
+FILE_NAME = os.path.join(os.path.dirname(__file__), "claims.csv")
 
-
-# --------------------------------------------
+# ----------------------------------------------------------
 # Initialize the CSV file if it does not exist
-# --------------------------------------------
+# ----------------------------------------------------------
 def initialize_file():
     if not os.path.exists(FILE_NAME):
         with open(FILE_NAME, "w") as file:
             file.write("Claim ID,Patient Name,Amount,Status\n")
 
-# Final improvements for clarity and readability
-# --------------------------------------------
-# Add a new claim to the system
-# --------------------------------------------
+# ----------------------------------------------------------
+# Add a new claim to the system by collecting user input
+# ----------------------------------------------------------
 def add_claim():
     print("\n--- Add Claim ---")
 
     try:
+        # Collect user input for each required field
         claim_id = input("Enter Claim ID: ").strip()
         name = input("Enter Patient Name: ").strip()
         amount = input("Enter Claim Amount: ").strip()
@@ -36,68 +35,80 @@ def add_claim():
     except KeyboardInterrupt:
         print("\nInput interrupted. Returning to menu.")
         return
-# Ensures user does not leave required fields empty
-    # Validate input
+
+    # Validate input to ensure all required fields are completed before saving
     if claim_id == "" or name == "" or amount == "" or status == "":
         print("Error: All fields are required.")
         return
 
+    # Save the new claim to the CSV file so it can be accessed later
     with open(FILE_NAME, "a") as file:
         file.write(f"{claim_id},{name},{amount},{status}\n")
 
     print("Claim added successfully.")
 
-
-# --------------------------------------------
-# View all claims
-# --------------------------------------------
+# ----------------------------------------------------------
+# Display all stored claims from the CSV file
+# ----------------------------------------------------------
 def view_claims():
     print("\n--- All Claims ---")
 
     try:
+        # Read stored data from the CSV file to display existing claims
         with open(FILE_NAME, "r") as file:
             lines = file.readlines()
 
+            # Check if file is empty, and inform user if no claims are found
             if len(lines) <= 1:
                 print("No claims found.")
                 return
 
+            # Loop through all records and display each claim to the user
             for line in lines:
                 print(line.strip())
 
     except FileNotFoundError:
         print("Error: File not found.")
 
-
-# --------------------------------------------
+# ----------------------------------------------------------
 # Update an existing claim
-# --------------------------------------------
+# ----------------------------------------------------------
 def update_claim():
     print("\n--- Update Claim ---")
 
     try:
+        # Ask user for the claim ID they want to update
         claim_id = input("Enter Claim ID to update: ").strip()
     except KeyboardInterrupt:
         print("\nInput interrupted. Returning to menu.")
         return
 
+    # Track whether the entered claim ID exists so the user can be informed if not found
     updated = False
 
     try:
+        # Read all existing data from the CSV file
         with open(FILE_NAME, "r") as file:
             lines = file.readlines()
 
+        # Rewrite the file with updated information
         with open(FILE_NAME, "w") as file:
+            # Loop through all records to find and update the matching claim ID
             for line in lines:
+                # Split each line into parts for easier comparison
                 data = line.strip().split(",")
 
+                # Check if this is the first line with column names and keep it unchanged
                 if data[0] == "Claim ID":
                     file.write(line)
                     continue
 
+                # Check if the current record matches the claim ID entered by the user
                 if data[0] == claim_id:
                     print("Updating claim...")
+
                     try:
+                        # Ask user for new updated information
                         name = input("Enter new Patient Name: ").strip()
                         amount = input("Enter new Amount: ").strip()
                         status = input("Enter new Status: ").strip()
@@ -105,11 +116,14 @@ def update_claim():
                         print("\nUpdate cancelled.")
                         return
 
+                    # Write updated claim information to file
                     file.write(f"{claim_id},{name},{amount},{status}\n")
                     updated = True
                 else:
+                    # Keep all other records unchanged
                     file.write(line)
 
+        # Inform user whether update was successful or not
         if updated:
             print("Claim updated successfully.")
         else:
@@ -118,39 +132,47 @@ def update_claim():
     except FileNotFoundError:
         print("Error: File not found.")
 
-
-# --------------------------------------------
+# ----------------------------------------------------------
 # Delete a claim
-# --------------------------------------------
+# ----------------------------------------------------------
 def delete_claim():
     print("\n--- Delete Claim ---")
 
     try:
+        # Ask user for the claim ID they want to delete
         claim_id = input("Enter Claim ID to delete: ").strip()
     except KeyboardInterrupt:
         print("\nInput interrupted. Returning to menu.")
         return
 
+    # Track whether the claim ID exists so the user can be informed if not found
     deleted = False
 
     try:
+        # Read all existing data from the CSV file
         with open(FILE_NAME, "r") as file:
             lines = file.readlines()
 
+        # Rewrite file without the deleted claim
         with open(FILE_NAME, "w") as file:
+            # Loop through all records and remove the matching claim ID
             for line in lines:
                 data = line.strip().split(",")
 
+                # Check if this is the first line with column names and keep it unchanged
                 if data[0] == "Claim ID":
                     file.write(line)
                     continue
 
+                # Check if current record matches the claim ID to delete
                 if data[0] == claim_id:
                     deleted = True
                     continue
                 else:
+                    # Keep all other records unchanged
                     file.write(line)
 
+        # Inform user whether deletion was successful or not
         if deleted:
             print("Claim deleted successfully.")
         else:
@@ -159,11 +181,11 @@ def delete_claim():
     except FileNotFoundError:
         print("Error: File not found.")
 
-
-# --------------------------------------------
+# ----------------------------------------------------------
 # Main menu for user interaction
-# --------------------------------------------
+# ----------------------------------------------------------
 def menu():
+    # Continuously display options and allow user to interact with the system until they choose to exit
     while True:
         print("\n--- Insure Claim Tracker ---")
         print("1. Add Claim")
@@ -173,11 +195,13 @@ def menu():
         print("5. Exit")
 
         try:
+            # Get user choice for desired operation
             choice = input("Select an option: ").strip()
         except KeyboardInterrupt:
             print("\nProgram interrupted safely. Exiting.")
             break
 
+        # Direct user to the correct function based on their choice
         if choice == "1":
             add_claim()
         elif choice == "2":
@@ -192,10 +216,10 @@ def menu():
         else:
             print("Invalid choice. Please try again.")
 
-
-# --------------------------------------------
-# Run the program
-# --------------------------------------------
+# ----------------------------------------------------------
+# Entry point of the program
+# ----------------------------------------------------------
 if __name__ == "__main__":
+    # Start the program by preparing the file and launching the menu
     initialize_file()
     menu()
