@@ -15,13 +15,12 @@ All data is stored in a CSV file, so information is saved and available the next
 
 ## How to Run
 
-1. Download or clone the repository
-2. Open the project in a Python environment (such as VS Code)
+1. Download or clone the repository  
+2. Open the project in a Python environment (such as VS Code)  
 3. Run the file:
 
-   ```
-   python InsureClaim.py
-   ```
+   python InsureClaim.py  
+
 4. Follow the on-screen menu to interact with the system
 
 ## Technologies Used
