@@ -10,7 +10,29 @@
 
 import os
 
+from typer import confirm
+
 FILE_NAME = os.path.join(os.path.dirname(__file__), "claims.csv")
+
+# ----------------------------------------------------------
+# Helper: Validate amount input (must be numeric)
+# ----------------------------------------------------------
+def is_valid_amount(amount):
+    try:
+        float(amount)
+        return True
+    except ValueError:
+        return False
+
+# ----------------------------------------------------------
+# Helper: Check for duplicate Claim IDs
+# ----------------------------------------------------------
+def claim_id_exists(claim_id):
+    with open(FILE_NAME, "r") as file:
+        for line in file:
+            if line.startswith(claim_id + ","):
+                return True
+    return False
 
 # ----------------------------------------------------------
 # Initialize the CSV file if it does not exist
@@ -41,6 +63,16 @@ def add_claim():
         print("Error: All fields are required.")
         return
 
+    # Ensure Claim ID is unique
+    if claim_id_exists(claim_id):
+        print("Error: Claim ID already exists.")
+        return
+
+    # Ensure amount is numeric
+    if not is_valid_amount(amount):
+        print("Error: Amount must be a number.")
+        return
+
     # Save the new claim to the CSV file so it can be accessed later
     with open(FILE_NAME, "a") as file:
         file.write(f"{claim_id},{name},{amount},{status}\n")
@@ -55,17 +87,25 @@ def view_claims():
 
     try:
         # Read stored data from the CSV file to display existing claims
-        with open(FILE_NAME, "r") as file:
+           with open(FILE_NAME, "r") as file:
             lines = file.readlines()
+    except Exception as e:
+            print(f"Unexpected error: {e}")
+            return
 
             # Check if file is empty, and inform user if no claims are found
             if len(lines) <= 1:
                 print("No claims found.")
                 return
+            
+            # Display formatted table for better readability
+                print(f"{'ID':<10}{'Name':<20}{'Amount':<10}{'Status':<10}")
+                print("-" * 50)
 
             # Loop through all records and display each claim to the user
-            for line in lines:
-                print(line.strip())
+            for line in lines[1:]:
+                data = line.strip().split(",")
+                print(f"{data[0]:<10}{data[1]:<20}{data[2]:<10}{data[3]:<10}")
 
     except FileNotFoundError:
         print("Error: File not found.")
@@ -109,9 +149,22 @@ def update_claim():
 
                     try:
                         # Ask user for new updated information
-                        name = input("Enter new Patient Name: ").strip()
-                        amount = input("Enter new Amount: ").strip()
-                        status = input("Enter new Status: ").strip()
+                        name = input(f"Enter new Patient Name [{data[1]}]: ").strip()
+                        amount = input(f"Enter new Amount [{data[2]}]: ").strip()
+                        status = input(f"Enter new Status [{data[3]}]: ").strip()
+
+                        # Keep old values if blank
+                        if name == "":
+                            name = data[1]
+                        if amount == "":
+                            amount = data[2]
+                        if status == "":
+                            status = data[3]
+
+                        # Validate updated amount
+                        if not is_valid_amount(amount):
+                            print("Error: Amount must be a number.")
+                            return
                     except KeyboardInterrupt:
                         print("\nUpdate cancelled.")
                         return
@@ -165,6 +218,10 @@ def delete_claim():
                     continue
 
                 # Check if current record matches the claim ID to delete
+                confirm = input(f"Are you sure you want to delete claim {claim_id}? (y/n): ").lower()
+                if confirm != "y":
+                    print("Deletion cancelled.")
+                    return
                 if data[0] == claim_id:
                     deleted = True
                     continue
