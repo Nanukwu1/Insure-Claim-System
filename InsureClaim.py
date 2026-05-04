@@ -7,7 +7,6 @@
 # Data is stored in a CSV file.
 # ============================================
 
-
 import os
 
 FILE_NAME = os.path.join(os.path.dirname(__file__), "claims.csv")
@@ -109,7 +108,14 @@ def view_claims():
 
         # Go through each claim and display its details
         for line in lines[1:]:
+            # Split the line into individual values using comma as delimiter
             data = line.strip().split(",")
+
+            # Skip any incomplete or incorrectly formatted lines to prevent errors
+            if len(data) != 4:
+                continue
+
+            # Display each claim in a formatted row
             print(f"{data[0]:<10}{data[1]:<20}{data[2]:<10}{data[3]:<10}")
 
     except FileNotFoundError:
@@ -204,6 +210,12 @@ def delete_claim():
         print("\nInput interrupted. Returning to menu.")
         return
 
+    # Ask for confirmation once before deleting
+    confirm = input(f"Are you sure you want to delete claim {claim_id}? (y/n): ").lower()
+    if confirm != "y":
+        print("Deletion cancelled.")
+        return
+
     # Track whether the claim ID exists so the user can be informed if not found
     deleted = False
 
@@ -224,10 +236,6 @@ def delete_claim():
                     continue
 
                 # Check if current record matches the claim ID to delete
-                confirm = input(f"Are you sure you want to delete claim {claim_id}? (y/n): ").lower()
-                if confirm != "y":
-                    print("Deletion cancelled.")
-                    return
                 if data[0] == claim_id:
                     deleted = True
                     continue
