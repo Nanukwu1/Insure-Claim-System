@@ -27,21 +27,17 @@ All data is stored in a CSV file, so information is saved and available the next
 
 ## How to Run the Program
 
-1. Download or clone the repository  
-2. Open the project in a Python environment (such as VS Code)  
-3. Run the file:
+1. Clone the repository  
+2. Open the project in a Python environment (such as VS Code)
+3. Find the project folder in your terminal
+4. Run the file:
 
 ```bash
 python InsureClaim.py
 ```
 
-4. Follow the on-screen menu to interact with the system
+5. Follow the on-screen menu to interact with the system
 
-## File Structure
-
-* InsureClaim.py → Main program file containing all logic
-* claims.csv → Stores all claim records
-* README.md → Project documentation
 
 ## Example Usage
 
@@ -59,12 +55,12 @@ The user selects an option by entering the corresponding number.
 
 ## Error Handling
 
-The program includes error handling to:
+This system includes input validation and error handling to ensure:
 
-* Prevent non-numeric claim amounts
+* Claim amounts are numeric
 * Avoid duplicate claim IDs
-* Handle missing files
-* Prevent crashes from invalid or incomplete input
+* Handles empty or missing files without crashing
+* Required fields are entered
 
 ## Authors
 
