@@ -94,26 +94,23 @@ def view_claims():
     print("\n--- All Claims ---")
 
     try:
-        # Read stored data from the CSV file to display existing claims
-           with open(FILE_NAME, "r") as file:
+        # Read stored data from the CSV file
+        with open(FILE_NAME, "r") as file:
             lines = file.readlines()
-    except Exception as e:
-            print(f"Unexpected error: {e}")
+
+        # Check if file is empty and inform the user if no claims are found
+        if len(lines) <= 1:
+            print("No claims found.")
             return
 
-            # Check if file is empty, and inform user if no claims are found
-            if len(lines) <= 1:
-                print("No claims found.")
-                return
-            
-            # Display formatted table for better readability
-                print(f"{'ID':<10}{'Name':<20}{'Amount':<10}{'Status':<10}")
-                print("-" * 50)
+        # Display column headers so the output is easier to read
+        print(f"{'ID':<10}{'Name':<20}{'Amount':<10}{'Status':<10}")
+        print("-" * 50)
 
-            # Loop through all records and display each claim to the user
-            for line in lines[1:]:
-                data = line.strip().split(",")
-                print(f"{data[0]:<10}{data[1]:<20}{data[2]:<10}{data[3]:<10}")
+        # Go through each claim and display its details
+        for line in lines[1:]:
+            data = line.strip().split(",")
+            print(f"{data[0]:<10}{data[1]:<20}{data[2]:<10}{data[3]:<10}")
 
     except FileNotFoundError:
         print("Error: File not found.")
